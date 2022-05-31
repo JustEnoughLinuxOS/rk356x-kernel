@@ -11,10 +11,6 @@
 	};
 };
 
-&cpu0_opp_table {
-	/delete-node/ opp-1992000000;
-};
-
 &dmc {
 	system-status-freq = <
 		/*system status         freq(KHz)*/
@@ -35,7 +31,6 @@
 		opp-hz = /bits/ 64 <1056000000>;
 		opp-microvolt = <900000>;
 	};
-	/delete-node/ opp-1560000000;
 };
 
 &power {
