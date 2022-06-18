@@ -195,12 +195,12 @@
 		        linux,code = <BTN_DPAD_DOWN>;
 		};
 		sw3 {
-		        gpios = <&gpio3 RK_PA5 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_LOW>;
 		        label = "GPIO DPAD-LEFT";
 		        linux,code = <BTN_DPAD_LEFT>;
 		};
 		sw4 {
-		        gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PA5 GPIO_ACTIVE_LOW>;
 		        label = "GPIO DPAD-RIGHT";
 		        linux,code = <BTN_DPAD_RIGHT>;
 		};
@@ -245,7 +245,7 @@
 		        linux,code = <BTN_TL>;
 		};
 		sw13 {
-		        gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
 		        label = "GPIO BTN_TR";
 		        linux,code = <BTN_TR>;
 		};
@@ -255,7 +255,7 @@
 		        linux,code = <BTN_TL2>;
 		};
 		sw15 {
-		        gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
 		        label = "GPIO BTN_TR2";
 		        linux,code = <BTN_TR2>;
 		};
