@@ -10,10 +10,11 @@
 #include <dt-bindings/display/media-bus-format.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include "rk3566.dtsi"
-#include "rk3568-evb2.dtsi"
+#include "rk3568-evb.dtsi"
+#include "rk3568-linux.dtsi"
 
 / {
-	model = "Anbernic RG503";
+	model = "Anbernic RG353P";
 	compatible = "rockchip,rk3566-evb2-lp4x-v11", "rockchip,rk3566";
 
 	adc_keys: adc-keys {
@@ -79,7 +80,6 @@
                         gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
                         label = "battery_full";
 			default-state="on";
-                        retain-state-suspended;
                 };
 
                 led@2 {
@@ -92,7 +92,6 @@
                         gpios = <&gpio0 RK_PC7 GPIO_ACTIVE_HIGH>;
                         label = "low_power";
 			default-state="off";
-                        retain-state-suspended;
                 };			
 	};
 
@@ -166,17 +165,17 @@
 		  p = positive direction, n = negative direction
 		  report value = (real_adc_data * tuning_value) / 100
 		*/
-		abs_x-p-tuning = <400>;
-		abs_x-n-tuning = <400>;
+		abs_x-p-tuning = <450>;
+		abs_x-n-tuning = <450>;
 
-		abs_y-p-tuning = <400>;
-		abs_y-n-tuning = <400>;
+		abs_y-p-tuning = <450>;
+		abs_y-n-tuning = <450>;
 
-		abs_rx-p-tuning = <400>;
-		abs_rx-n-tuning = <400>;
+		abs_rx-p-tuning = <450>;
+		abs_rx-n-tuning = <450>;
 
-		abs_ry-p-tuning = <400>;
-		abs_ry-n-tuning = <400>;
+		abs_ry-p-tuning = <450>;
+		abs_ry-n-tuning = <450>;
 
 		/* poll device interval (ms), adc read interval */
 		poll-interval = <10>;

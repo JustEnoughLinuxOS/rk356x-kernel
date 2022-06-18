@@ -231,7 +231,7 @@ static int panel_simple_parse_cmd_seq(struct device *dev,
 
 	return 0;
 }
-
+/*
 static void panel_simple_spi_write_cmd(struct panel_simple *panel,
 				       u8 type, int value)
 {
@@ -239,9 +239,7 @@ static void panel_simple_spi_write_cmd(struct panel_simple *panel,
 
 	gpiod_direction_output(panel->spi_cs_gpio, 0);
 
-	/**
-	 * send cmd or data flag for 3line 9bit serial data
-	 */
+	
 	if (type == SPI_3LINE_9BIT_MODE_CMD) {
 		gpiod_direction_output(panel->spi_sdi_gpio, 0);
 		gpiod_direction_output(panel->spi_scl_gpio, 0);
@@ -256,9 +254,7 @@ static void panel_simple_spi_write_cmd(struct panel_simple *panel,
 		udelay(10);
 	}
 
-	/**
-	 * send the 8bit value from the MSB
-	 */
+
 	for (i = 0; i < 8; i++) {
 		if (value & 0x80)
 			gpiod_direction_output(panel->spi_sdi_gpio, 1);
@@ -274,7 +270,7 @@ static void panel_simple_spi_write_cmd(struct panel_simple *panel,
 
 	gpiod_direction_output(panel->spi_cs_gpio, 1);
 }
-
+*/
 static int panel_simple_xfer_mcu_cmd_seq(struct panel_simple *panel,
 				      struct panel_cmd_seq *cmds)
 {
@@ -301,10 +297,11 @@ static int panel_simple_xfer_mcu_cmd_seq(struct panel_simple *panel,
 	return 0;
 }
 
-static int panel_simple_xfer_spi_cmd_seq(struct panel_simple *panel,
-					 struct panel_cmd_seq *cmds)
-{
-	int i;
+//static int panel_simple_xfer_spi_cmd_seq(struct panel_simple *panel,
+//					 struct panel_cmd_seq *cmds)
+//{
+/*	
+int i;
 
 	if (!cmds)
 		return -EINVAL;
@@ -322,8 +319,160 @@ static int panel_simple_xfer_spi_cmd_seq(struct panel_simple *panel,
 		if (cmd->header.delay)
 			panel_simple_sleep(cmd->header.delay);
 	}
+*/
 
-	return 0;
+
+//	return 0;
+//}
+
+
+
+int cmd_exit_code[4][32]={
+
+	{0x028},
+	{0x218},
+	{0x010},
+	{0x2C8},	
+};
+
+static void rockchip_panel_write_spi_exit_buffer(struct panel_simple *panel)
+{
+	int i,m,n;
+	int value,value_hl;
+	
+//	mdelay(150);
+	
+	for (m = 0; m < 4; m++) {	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 0);
+		gpiod_direction_output(panel->spi_cs_gpio, 0);
+			if(cmd_exit_code[m][0]& 0x400){
+				
+				value_hl=32;
+			}else{
+				value_hl=16;
+				
+			}
+		
+			for (n = 0; n < value_hl; n++) {
+				value = cmd_exit_code[m][n];
+				if (value & 0x200)
+				{
+					mdelay(value & 0xFF);
+					break;
+				};
+				
+				for (i = 0; i < 9; i++) {
+				
+					if (value & 0x100)
+						gpiod_direction_output(panel->spi_sdi_gpio, 1);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 1);
+					else
+						gpiod_direction_output(panel->spi_sdi_gpio, 0);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 0);
+
+					gpiod_direction_output(panel->spi_scl_gpio, 0);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 0);
+					udelay(10);
+					gpiod_direction_output(panel->spi_scl_gpio, 1);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 1);
+					value <<= 1;
+					udelay(10);
+				}
+				
+			}
+		gpiod_direction_output(panel->spi_cs_gpio, 1);	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 1);
+		mdelay(1);
+	}
+//	mdelay(50);
+		
+}
+
+
+int cmd_init_code[30][32]={
+	{0x0A1,0x100,0x100,0x100,0x100,0x100,0x100},
+	{0x2C8},
+	{0x0F0,0x15A,0x15A},
+	{0x0F1,0x15A,0x15A},
+	{0x0B0,0x102},
+	{0x0F3,0x13B},	
+	{0x0F4,0x133,0x142,0x100,0x108},
+	{0x0F5,0x100,0x106,0x126,0x135,0x103},
+	{0x0F6,0x102},
+	{0x0C6,0x10B,0x100,0x100,0x13C,0x100,0x122,0x100,0x100,0x100,0x100},
+	{0x0F7,0x120},
+	{0x0F5,0x100,0x106,0x127,0x135,0x103},
+	{0x0B2,0x106,0x106,0x106,0x106},
+	{0x0B1,0x107,0x100,0x110},
+	{0x4F8,0x17F,0x17A,0x189,0x167,0x126,0x138,0x100,0x100,0x109,0x167,0x170,0x188,0x17A,0x176,0x105,0x109,0x123,0x123,0x123},
+	{0x011},
+	{0x2C8},
+	{0x029},
+	{0x2C8},
+	{0x4B5,0x1FF,0x1EF,0x135,0x142,0x10D,0x1D7,0x1FF,0x107,0x1FF,0x1FF,0x1FD,0x100,0x101,0x1FF,0x105,0x112,0x10F,0x1FF,0x1FF,0x1FF,0x1FF},
+	{0x0B4,0x115},
+	{0x0B3,0x100},
+	{0x4F9,0x101,0x19F,0x19F,0x1BE,0x1CF,0x1D7,0x1C9,0x1C2,0x1CB,0x1BB,0x1E1,0x1E3,0x1DE,0x1D6,0x1D0,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F},
+	{0x0F9,0x100},	
+	{0x026,0x100},
+	{0x0B2,0x112},
+	{0x011},
+	{0x2C8},
+	{0x029},
+	{0x2C8},	
+};
+
+static void rockchip_panel_write_spi_init_buffer(struct panel_simple *panel)
+{
+	int i,m,n;
+	int value,value_hl;
+	
+	mdelay(50);
+	
+	for (m = 0; m < 30; m++) {	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 0);
+		gpiod_direction_output(panel->spi_cs_gpio, 0);
+			if(cmd_init_code[m][0]& 0x400){
+				
+				value_hl=32;
+			}else{
+				value_hl=16;
+				
+			}
+		
+			for (n = 0; n < value_hl; n++) {
+				value = cmd_init_code[m][n];
+				if (value & 0x200)
+				{
+					mdelay(value & 0xFF);
+					break;
+				};
+				
+				for (i = 0; i < 9; i++) {
+				
+					if (value & 0x100)
+						gpiod_direction_output(panel->spi_sdi_gpio, 1);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 1);
+					else
+						gpiod_direction_output(panel->spi_sdi_gpio, 0);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 0);
+
+					gpiod_direction_output(panel->spi_scl_gpio, 0);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 0);
+				//	udelay(10);
+					gpiod_direction_output(panel->spi_scl_gpio, 1);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 1);
+					value <<= 1;
+				//	udelay(10);
+				}
+				
+			}
+		gpiod_direction_output(panel->spi_cs_gpio, 1);	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 1);
+		mdelay(1);
+	}
+//	mdelay(150);
+		
 }
 
 #if IS_ENABLED(CONFIG_DRM_MIPI_DSI)
@@ -512,11 +661,7 @@ static int panel_simple_disable(struct drm_panel *panel)
 	if (!p->enabled)
 		return 0;
 
-	if (p->backlight) {
-		p->backlight->props.power = FB_BLANK_POWERDOWN;
-		p->backlight->props.state |= BL_CORE_FBBLANK;
-		backlight_update_status(p->backlight);
-	}
+	backlight_disable(p->backlight);
 
 	if (p->desc->delay.disable)
 		panel_simple_sleep(p->desc->delay.disable);
@@ -526,6 +671,17 @@ static int panel_simple_disable(struct drm_panel *panel)
 		if (err)
 			dev_err(panel->dev, "failed to send exit cmds seq\n");
 	}
+	
+	if (p->cmd_type == CMD_TYPE_SPI) {	
+		if (p->desc->exit_seq) {
+			if (0)
+				panel_simple_xfer_dsi_cmd_seq(p, p->desc->exit_seq);
+			else if (p->cmd_type == CMD_TYPE_SPI)
+				rockchip_panel_write_spi_exit_buffer(p);
+			if (err)
+				dev_err(panel->dev, "failed to send exit cmds seq\n");
+		}
+	}
 	p->enabled = false;
 
 	return 0;
@@ -534,19 +690,12 @@ static int panel_simple_disable(struct drm_panel *panel)
 static int panel_simple_unprepare(struct drm_panel *panel)
 {
 	struct panel_simple *p = to_panel_simple(panel);
-	int err = 0;
+
 
 	if (!p->prepared)
 		return 0;
+//printk("panel_simple_unprepare  \n");
 
-	if (p->desc->exit_seq) {
-		if (p->dsi)
-			panel_simple_xfer_dsi_cmd_seq(p, p->desc->exit_seq);
-		else if (p->cmd_type == CMD_TYPE_SPI)
-			err = panel_simple_xfer_spi_cmd_seq(p, p->desc->exit_seq);
-		if (err)
-			dev_err(panel->dev, "failed to send exit cmds seq\n");
-	}
 
 	gpiod_direction_output(p->reset_gpio, 1);
 
@@ -592,10 +741,10 @@ static int panel_simple_prepare(struct drm_panel *panel)
 		panel_simple_sleep(p->desc->delay.init);
 
 	if (p->desc->init_seq) {
-		if (p->dsi)
+		if (0)
 			panel_simple_xfer_dsi_cmd_seq(p, p->desc->init_seq);
 		else if (p->cmd_type == CMD_TYPE_SPI)
-			err = panel_simple_xfer_spi_cmd_seq(p, p->desc->init_seq);
+			rockchip_panel_write_spi_init_buffer(p);
 		if (err)
 			dev_err(panel->dev, "failed to send init cmds seq\n");
 	}
@@ -621,11 +770,7 @@ static int panel_simple_enable(struct drm_panel *panel)
 	if (p->desc->delay.enable)
 		panel_simple_sleep(p->desc->delay.enable);
 
-	if (p->backlight) {
-		p->backlight->props.state &= ~BL_CORE_FBBLANK;
-		p->backlight->props.power = FB_BLANK_UNBLANK;
-		backlight_update_status(p->backlight);
-	}
+	backlight_enable(p->backlight);
 
 	p->enabled = true;
 
@@ -679,6 +824,248 @@ static const struct drm_panel_funcs panel_simple_funcs = {
 	.get_modes = panel_simple_get_modes,
 	.get_timings = panel_simple_get_timings,
 };
+
+
+
+
+
+int cmd_backlight1_code[16][32]={
+	{0x4F9,0x101,0x19F,0x19F,0x1BE,0x1CF,0x1D7,0x1C9,0x1C2,0x1CB,0x1BB,0x1E1,0x1E3,0x1DE,0x1D6,0x1D0,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x19C,0x19C,0x1BA,0x1D0,0x1D8,0x1CB,0x1C3,0x1CB,0x1BB,0x1E2,0x1E4,0x1DF,0x1D6,0x1CE,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x199,0x199,0x1B6,0x1D1,0x1D9,0x1CC,0x1C3,0x1CB,0x1BC,0x1E2,0x1E4,0x1DF,0x1D6,0x1CC,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x195,0x195,0x1B1,0x1D2,0x1D9,0x1CC,0x1C4,0x1CD,0x1BE,0x1E2,0x1E3,0x1DF,0x1D7,0x1CC,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x193,0x193,0x1AF,0x1D3,0x1DA,0x1CD,0x1C5,0x1CD,0x1BE,0x1E2,0x1E3,0x1DF,0x1D6,0x1CA,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x191,0x191,0x1AC,0x1D3,0x1DA,0x1CE,0x1C5,0x1CD,0x1BE,0x1E3,0x1E3,0x1E0,0x1D7,0x1CA,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x18F,0x18F,0x1AA,0x1D4,0x1DB,0x1CE,0x1C6,0x1CD,0x1BF,0x1E3,0x1E3,0x1E1,0x1D7,0x1CA,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x18D,0x18D,0x1A7,0x1D5,0x1DB,0x1CF,0x1C6,0x1CE,0x1C0,0x1E4,0x1E4,0x1E1,0x1D7,0x1C8,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x18B,0x18B,0x1A5,0x1D5,0x1DB,0x1CF,0x1C7,0x1CE,0x1C0,0x1E3,0x1E3,0x1E1,0x1D8,0x1C7,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x189,0x189,0x1A2,0x1D5,0x1DB,0x1CF,0x1C8,0x1CF,0x1C2,0x1E3,0x1E3,0x1E1,0x1D9,0x1C7,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x187,0x186,0x19F,0x1D6,0x1DD,0x1D1,0x1C7,0x1CE,0x1C1,0x1E4,0x1E3,0x1E2,0x1D9,0x1C6,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x184,0x183,0x19B,0x1D7,0x1DE,0x1D2,0x1C8,0x1CE,0x1C2,0x1E4,0x1E3,0x1E2,0x1D9,0x1C3,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x182,0x181,0x199,0x1D6,0x1DD,0x1D1,0x1CA,0x1CF,0x1C3,0x1E4,0x1E3,0x1E3,0x1DA,0x1C2,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x17F,0x17E,0x195,0x1D7,0x1DE,0x1D2,0x1CB,0x1CF,0x1C5,0x1E5,0x1E3,0x1E3,0x1DA,0x1BF,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x17D,0x17C,0x192,0x1D7,0x1DD,0x1D2,0x1CB,0x1D0,0x1C6,0x1E5,0x1E1,0x1E3,0x1DA,0x1BD,0x1D3,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+	{0x4F9,0x101,0x179,0x178,0x18D,0x1D9,0x1DF,0x1D5,0x1CB,0x1CF,0x1C5,0x1E5,0x1E0,0x1E4,0x1DC,0x1B8,0x1D4,0x1FA,0x1ED,0x1E6,0x12F,0x100,0x12F,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000,0x000},
+};
+
+int cmd_backlight2_code[2][32]={
+	{0x0F9,0x100},	
+	{0x026,0x100},
+};
+
+int cmd_backlight3_code[16][32]={
+	{0x0B2,0x112},
+	{0x0B2,0x113},
+	{0x0B2,0x114},
+	{0x0B2,0x114},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},
+	{0x0B2,0x115},	
+};
+
+
+static void rockchip_panel_write_spi_backlight_buffer(struct panel_simple *panel,int bl_value)
+{
+	int i,m,n;
+	int value,value_hl,bacblight_value;
+	
+	mdelay(10);
+	
+	
+	bacblight_value=(255-bl_value)/16;
+	
+	
+	
+
+	
+	for (m = 0; m < 1; m++) {	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 0);
+		gpiod_direction_output(panel->spi_cs_gpio, 0);
+			if(cmd_backlight1_code[bacblight_value][0]& 0x400){
+				
+				value_hl=32;
+			}else{
+				value_hl=16;		
+			}
+			for (n = 0; n < value_hl; n++) {
+				value = cmd_backlight1_code[bacblight_value][n];
+				if (value & 0x200)
+				{
+					mdelay(value & 0xFF);
+					break;
+				};
+				for (i = 0; i < 9; i++) {
+					if (value & 0x100)
+						gpiod_direction_output(panel->spi_sdi_gpio, 1);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 1);
+					else
+						gpiod_direction_output(panel->spi_sdi_gpio, 0);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 0);
+
+					gpiod_direction_output(panel->spi_scl_gpio, 0);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 0);
+				//	udelay(10);
+					gpiod_direction_output(panel->spi_scl_gpio, 1);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 1);
+					value <<= 1;
+				//	udelay(10);
+				}	
+			}
+		gpiod_direction_output(panel->spi_cs_gpio, 1);	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 1);
+		mdelay(1);
+	}
+
+
+
+	for (m = 0; m < 2; m++) {	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 0);
+		gpiod_direction_output(panel->spi_cs_gpio, 0);
+			if(cmd_backlight2_code[m][0]& 0x400){	
+				value_hl=32;
+			}else{
+				value_hl=16;
+			}
+		
+			for (n = 0; n < value_hl; n++) {
+				
+				value = cmd_backlight2_code[m][n];
+				
+				
+				if (value & 0x200)
+				{
+					mdelay(value & 0xFF);
+					break;
+				};
+				
+				for (i = 0; i < 9; i++) {
+				
+					if (value & 0x100)
+						gpiod_direction_output(panel->spi_sdi_gpio, 1);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 1);
+					else
+						gpiod_direction_output(panel->spi_sdi_gpio, 0);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 0);
+
+					gpiod_direction_output(panel->spi_scl_gpio, 0);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 0);
+				//	udelay(10);
+					gpiod_direction_output(panel->spi_scl_gpio, 1);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 1);
+					value <<= 1;
+				//	udelay(10);
+				}
+				
+			}
+		gpiod_direction_output(panel->spi_cs_gpio, 1);	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 1);
+		mdelay(1);
+	}
+	
+	
+	
+	
+//	for (m = 0; m < 1; m++) {	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 0);
+		gpiod_direction_output(panel->spi_cs_gpio, 0);
+			if(cmd_backlight3_code[bacblight_value][0]& 0x400){	
+				value_hl=32;
+			}else{
+				value_hl=16;
+			}
+		
+			for (n = 0; n < value_hl; n++) {
+				
+				value = cmd_backlight3_code[bacblight_value][n];
+				
+				
+				if (value & 0x200)
+				{
+					mdelay(value & 0xFF);
+					break;
+				};
+				
+				for (i = 0; i < 9; i++) {
+				
+					if (value & 0x100)
+						gpiod_direction_output(panel->spi_sdi_gpio, 1);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 1);
+					else
+						gpiod_direction_output(panel->spi_sdi_gpio, 0);	
+					//	dm_gpio_set_value(&priv->spi_sdi_gpio, 0);
+
+					gpiod_direction_output(panel->spi_scl_gpio, 0);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 0);
+				//	udelay(10);
+					gpiod_direction_output(panel->spi_scl_gpio, 1);	
+				//	dm_gpio_set_value(&priv->spi_scl_gpio, 1);
+					value <<= 1;
+				//	udelay(10);
+				}
+				
+			}
+		gpiod_direction_output(panel->spi_cs_gpio, 1);	
+		//dm_gpio_set_value(&priv->spi_cs_gpio, 1);
+		mdelay(1);
+//	}	
+	
+//	mdelay(100);
+
+}
+
+
+
+static int dcs_bl_update_status(struct backlight_device *bl)
+{
+	struct panel_simple *p = bl_get_data(bl);
+	int ret;
+	int  back=bl->props.brightness;
+
+
+	if (!p->prepared)
+		return 0;
+	
+	rockchip_panel_write_spi_backlight_buffer(p,back);
+
+	printk("current brightness is %d     ret=%d\n",bl->props.brightness,ret);
+	if (ret < 0)
+		return ret;
+
+
+
+	return 0;
+}
+
+static int dcs_bl_get_brightness(struct backlight_device *bl)
+{
+	struct panel_simple *p = bl_get_data(bl);
+
+	u16 brightness = bl->props.brightness;
+	
+
+	if (!p->prepared)
+		return 0;
+
+
+
+	return brightness & 0xff;
+}
+
+static const struct backlight_ops dcs_bl_ops = {
+	.update_status = dcs_bl_update_status,
+	.get_brightness = dcs_bl_get_brightness,
+};
+
+
 
 static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
 {
@@ -2816,7 +3203,7 @@ static const struct panel_desc winstar_wf35ltiacd = {
 
 static const struct of_device_id platform_of_match[] = {
 	{
-		.compatible = "simple-panel",
+		.compatible = "simple-panel-oled",
 		.data = NULL,
 #ifndef CONFIG_DRM_PANEL_SIMPLE_OF_ONLY
 	}, {
@@ -3185,7 +3572,7 @@ static void panel_simple_platform_shutdown(struct platform_device *pdev)
 
 static struct platform_driver panel_simple_platform_driver = {
 	.driver = {
-		.name = "panel-simple",
+		.name = "panel-simple-oled",
 		.of_match_table = platform_of_match,
 	},
 	.probe = panel_simple_platform_probe,
@@ -3346,7 +3733,7 @@ static const struct panel_desc_dsi panasonic_vvx10f004b00 = {
 
 static const struct of_device_id dsi_of_match[] = {
 	{
-		.compatible = "simple-panel-dsi",
+		.compatible = "simple-panel-oled-dsi",
 		.data = NULL,
 #ifndef CONFIG_DRM_PANEL_SIMPLE_OF_ONLY
 	}, {
@@ -3426,6 +3813,27 @@ static int panel_simple_dsi_probe(struct mipi_dsi_device *dsi)
 	panel = dev_get_drvdata(dev);
 	panel->dsi = dsi;
 
+
+	if (!panel->backlight) {
+		struct backlight_properties props;
+
+		memset(&props, 0, sizeof(props));
+		props.type = BACKLIGHT_RAW;
+		props.brightness = 255;
+		props.max_brightness = 255;
+
+		panel->backlight =
+			devm_backlight_device_register(dev, "backlight",
+						       dev, panel, &dcs_bl_ops,
+						       &props);
+		if (IS_ERR(panel->backlight)) {
+			err = PTR_ERR(panel->backlight);
+			dev_err(dev, "failed to register dcs backlight: %d\n",
+				err);
+			return err;
+		}
+	}
+
 	dsi->mode_flags = desc->flags;
 	dsi->format = desc->format;
 	dsi->lanes = desc->lanes;
@@ -3457,7 +3865,7 @@ static void panel_simple_dsi_shutdown(struct mipi_dsi_device *dsi)
 
 static struct mipi_dsi_driver panel_simple_dsi_driver = {
 	.driver = {
-		.name = "panel-simple-dsi",
+		.name = "panel-simple-oled-dsi",
 		.of_match_table = dsi_of_match,
 	},
 	.probe = panel_simple_dsi_probe,
