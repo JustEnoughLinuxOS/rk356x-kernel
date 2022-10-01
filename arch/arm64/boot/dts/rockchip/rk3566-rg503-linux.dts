@@ -10,7 +10,7 @@
 #include <dt-bindings/display/media-bus-format.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include "rk3566.dtsi"
-#include "rk3568-evb2.dtsi"
+#include "rk3568-evb-rg503.dtsi"
 #include "rk3568-linux.dtsi"
 
 / {

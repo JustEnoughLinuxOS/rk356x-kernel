@@ -10,7 +10,7 @@
 #include <dt-bindings/display/media-bus-format.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include "rk3566.dtsi"
-#include "rk3568-evb.dtsi"
+#include "rk3568-evb-rg353p.dtsi"
 #include "rk3568-linux.dtsi"
 
 / {
@@ -33,7 +33,7 @@
 
 	rk_headset: rk-headset {
 		compatible = "rockchip_headset";
-		headset_gpio = <&gpio4 RK_PC6 GPIO_ACTIVE_HIGH>;
+		headset_gpio = <&gpio4 RK_PC0 GPIO_ACTIVE_HIGH>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&hp_det>;
 		io-channels = <&saradc 2>;
@@ -422,7 +422,7 @@
 	
 	headphone {
 		hp_det: hp-det {
-			rockchip,pins = <4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+			rockchip,pins = <4 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
 
