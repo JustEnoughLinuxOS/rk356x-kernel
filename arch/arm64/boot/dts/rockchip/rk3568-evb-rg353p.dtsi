@@ -518,12 +518,12 @@
 		disp_timings0: display-timings {
 			native-mode = <&dsi0_timing0>;
 			dsi0_timing0: timing0 {
-				clock-frequency = <26400000>;
+				clock-frequency = <27000000>;
 				hactive = <640>;
 				vactive = <480>;
-				hfront-porch = <119>;
+				hfront-porch = <131>;
 				hsync-len = <2>;
-				hback-porch = <119>;
+				hback-porch = <127>;
 				vfront-porch = <13>;
 				vsync-len = <2>;
 				vback-porch = <5>;
