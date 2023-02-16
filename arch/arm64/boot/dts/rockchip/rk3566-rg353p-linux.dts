@@ -124,6 +124,7 @@
 	
 	joypad: singleadc-joypad {
 		compatible = "singleadc-joypad";
+		hw_info = <0x01>;
 
 		joypad-name = "retrogame_joypad";
 		joypad-product = <0x1101>;

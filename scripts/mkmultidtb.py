@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 # Copyright (c) 2018 Fuzhou Rockchip Electronics Co., Ltd
 #
@@ -26,10 +26,11 @@ DTBS['RK3308-EVB'] = OrderedDict([('rk3308-evb-dmic-i2s-v10', '#_saradc_ch3=288'
 				  ('rk3308-evb-dmic-pdm-v10', '#_saradc_ch3=1024'),
 				  ('rk3308-evb-amic-v10', '#_saradc_ch3=407')])
 
+DTBS['RK3566-EVB'] = OrderedDict([('rk3566-rg353p-linux', '#_saradc_ch1=852'),
+				  ('rk3566-rg353v-linux', '#_saradc_ch1=681'),
+				  ('rk3566-rg503-linux', '#_saradc_ch1=1023')])
+
 def main():
-    if (len(sys.argv) < 2) or (sys.argv[1] == '-h'):
-        print __doc__
-        sys.exit(2)
 
     BOARD = sys.argv[1]
     TARGET_DTBS = DTBS[BOARD]
@@ -47,7 +48,7 @@ def main():
         shutil.copyfile(ori_file, new_file)
         target_dtb_list += ' ' + new_file
 
-    print target_dtb_list
+    print (target_dtb_list)
     os.system('scripts/resource_tool logo.bmp logo_kernel.bmp ' + target_dtb_list)
     os.system('rm ' + target_dtb_list)
 
