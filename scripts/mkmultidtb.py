@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 # Copyright (c) 2018 Fuzhou Rockchip Electronics Co., Ltd
-#
+# Copyright (C) 2023 Fewtarius
 
 
 """
