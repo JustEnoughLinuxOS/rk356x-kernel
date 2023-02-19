@@ -42,15 +42,11 @@
 int bat_full=0;
 int bat_charging=0;
 #endif
-//#define VOLTAGE_ALGORITHM
+#define VOLTAGE_ALGORITHM
 #ifdef VOLTAGE_ALGORITHM
 //#define __BATTERY_DEBUG__
 int low_battery_percent=0;
 int battery_percent_full=0;
-#endif
-#define CW2015_CAP
-#ifdef CW2015_CAP
-int rk817_battery_cap=0;
 #endif
 
 static int dbg_enable;
@@ -2547,9 +2543,6 @@ static int rk817_battery_get_property(struct power_supply *psy,
 		#ifdef VOLTAGE_ALGORITHM
 		val->intval = fixup_cap;
 		#endif
-		#ifdef CW2015_CAP
-			val->intval=rk817_battery_cap;
-		#endif
 		if (battery->pdata->bat_mode == MODE_VIRTUAL)
 			val->intval = VIRTUAL_SOC;
 		break;
@@ -2562,9 +2555,6 @@ static int rk817_battery_get_property(struct power_supply *psy,
 			val->intval = VIRTUAL_TEMPERATURE;
 		break;
 	case POWER_SUPPLY_PROP_STATUS:
-		#ifdef CW2015_CAP
-			val->intval=rk817_battery_cap;
-		#endif
 		if (battery->pdata->bat_mode == MODE_VIRTUAL)
 			val->intval = VIRTUAL_STATUS;
 		else if (battery->dsoc == 100 * 1000)
@@ -3438,8 +3428,6 @@ static void rk817_battery_work(struct work_struct *work)
 	if((battery->ac_in)||(battery->usb_in)){
 		#ifdef VOLTAGE_ALGORITHM
 		if(battery_percent_full == 1){
-		#elif defined(CW2015_CAP)
-		if(rk817_battery_cap == 100){		
 		#else
 		if(dsoc == 100){
 		#endif
@@ -3470,8 +3458,6 @@ static void rk817_battery_work(struct work_struct *work)
 	{
 		#ifdef VOLTAGE_ALGORITHM
 		if(low_battery_percent == 1){
-		#elif defined(CW2015_CAP)
-		if(rk817_battery_cap <= 20){	
 		#else
 		if(dsoc <= 20){
 		#endif

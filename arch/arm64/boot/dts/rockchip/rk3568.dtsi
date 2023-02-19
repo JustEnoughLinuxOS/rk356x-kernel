@@ -886,13 +886,7 @@
 		pinctrl-0 = <&i2c0_xfer>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		status = "okay";
-
-		cw2015@62 {
-			compatible = "cellwise,cw2015";
-			reg = <0x62>;
-			battery_id = <0x02>;
-		};
+		status = "disabled";
 	};
 
 	uart0: serial@fdd50000 {

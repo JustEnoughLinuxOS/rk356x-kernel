@@ -562,11 +562,7 @@ static void rk817_charge_sys_can_sd_disable(struct rk817_charger *charge)
 {
 	rk817_charge_field_write(charge, SYS_CAN_SD, DISABLE);
 }
-#define CW2015_CAP
-#ifdef CW2015_CAP
-int cw2015_get_charge_ac_state=0;
-EXPORT_SYMBOL(cw2015_get_charge_ac_state);
-#endif
+
 static int rk817_charge_get_charge_status(struct rk817_charger *charge)
 {
 	int status;
@@ -1484,18 +1480,12 @@ static void rk817_charge_irq_delay_work(struct work_struct *work)
 
 	if (charge->plugin_trigger) {
 		DBG("pmic: plug in\n");
-		#ifdef CW2015_CAP
-		cw2015_get_charge_ac_state=0;
-		#endif
 		charge->plugin_trigger = 0;
 		if (charge->pdata->extcon)
 			queue_delayed_work(charge->usb_charger_wq, &charge->usb_work,
 					   msecs_to_jiffies(10));
 	} else if (charge->plugout_trigger) {
 		DBG("pmic: plug out\n");
-		#ifdef CW2015_CAP
-		cw2015_get_charge_ac_state=1;
-		#endif
 		charge->plugout_trigger = 0;
 		rk817_charge_set_chrg_param(charge, USB_TYPE_NONE_CHARGER);
 		rk817_charge_set_chrg_param(charge, DC_TYPE_NONE_CHARGER);
