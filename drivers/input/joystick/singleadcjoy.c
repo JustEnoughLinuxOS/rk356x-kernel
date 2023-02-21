@@ -694,6 +694,8 @@ static int joypad_amux_setup(struct device *dev, struct joypad *joypad)
 	}
 	amux = joypad->amux;
 	amux->iio_ch = devm_iio_channel_get(dev, "amux_adc");
+	if (PTR_ERR(amux->iio_ch) == -EPROBE_DEFER)
+		return -EPROBE_DEFER;
 	if (IS_ERR(amux->iio_ch)) {
 		dev_err(dev, "iio channel get error\n");
 		return -EINVAL;
