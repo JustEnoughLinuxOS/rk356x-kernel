@@ -26,10 +26,14 @@ DTBS['RK3308-EVB'] = OrderedDict([('rk3308-evb-dmic-i2s-v10', '#_saradc_ch3=288'
 				  ('rk3308-evb-dmic-pdm-v10', '#_saradc_ch3=1024'),
 				  ('rk3308-evb-amic-v10', '#_saradc_ch3=407')])
 
-DTBS['RK3566-EVB'] = OrderedDict([('rk3566-rg353p-linux', '#_saradc_ch1=852'),
-				  ('rk3566-rg353m-linux', '#_saradc_ch1=512'),
-				  ('rk3566-rg353v-linux', '#_saradc_ch1=681'),
-				  ('rk3566-rg503-linux', '#_saradc_ch1=1023')])
+DTBS['rk3566'] = OrderedDict([('rk3566-rg353p-linux', '#_saradc_ch1=852'),
+			      ('rk3566-rg353m-linux', '#_saradc_ch1=512'),
+			      ('rk3566-rg353v-linux', '#_saradc_ch1=681'),
+			      ('rk3566-rg503-linux', '#_saradc_ch1=1023')])
+
+DTBS['rk3588'] = OrderedDict([('rk3588s-orangepi-5', '#_saradc_ch1=001'),
+                              ('rk3588-rock-5b', '#_saradc_ch1=002'),
+			      ('rk3588s-indiedroid-nova', '#_saradc_ch1=4095')])
 
 def main():
 
