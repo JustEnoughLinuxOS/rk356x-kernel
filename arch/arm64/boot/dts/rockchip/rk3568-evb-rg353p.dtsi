@@ -518,6 +518,10 @@
 			05 0A 01 10
 		];
 
+		panel-read-id-sequence = [
+			05 00 02 00 00
+		];
+
 		disp_timings0: display-timings {
 			native-mode = <&dsi0_timing0>;
 			dsi0_timing0: timing0 {
