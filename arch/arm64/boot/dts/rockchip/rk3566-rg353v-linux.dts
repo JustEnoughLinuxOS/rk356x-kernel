@@ -10,7 +10,7 @@
 #include <dt-bindings/display/media-bus-format.h>
 #include <dt-bindings/pinctrl/rockchip.h>
 #include "rk3566.dtsi"
-#include "rk3568-evb-rg353p.dtsi"
+#include "rk3568-evb-rg353v.dtsi"
 #include "rk3568-linux.dtsi"
 
 / {
@@ -339,6 +339,13 @@
 };
 
 &dsi0_panel {
+	power-supply = <&vcc3v3_lcd0_n>;
+	reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&lcd0_rst_gpio>;
+};
+
+&dsi0_panel2 {
 	power-supply = <&vcc3v3_lcd0_n>;
 	reset-gpios = <&gpio4 RK_PA0 GPIO_ACTIVE_LOW>;
 	pinctrl-names = "default";
