@@ -29,6 +29,7 @@ DTBS['RK3308-EVB'] = OrderedDict([('rk3308-evb-dmic-i2s-v10', '#_saradc_ch3=288'
 DTBS['rk356x'] = OrderedDict([('rk3566-rg353p-linux', '#_saradc_ch1=852'),
 			      ('rk3566-rg353m-linux', '#_saradc_ch1=512'),
 			      ('rk3566-rg353v-linux', '#_saradc_ch1=681'),
+			      ('rk3566-rk2023-linux', '#_saradc_ch1=650'),
 			      ('rk3566-rg503-linux', '#_saradc_ch1=1023')])
 
 DTBS['rk3588'] = OrderedDict([('rk3588s-orangepi-5', '#_saradc_ch1=001'),
