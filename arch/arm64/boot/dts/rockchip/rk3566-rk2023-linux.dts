@@ -104,7 +104,7 @@
 		WIFI,host_wake_irq = <&gpio4 RK_PA1 GPIO_ACTIVE_HIGH>;
 		//WIFI,poweren_gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>; /* GPIO0_a3 */
 		keep_wifi_power_on;		
-		status = "disabled";
+		status = "okay";
 	};
 
 	wireless-bluetooth {
@@ -119,7 +119,7 @@
 		BT,reset_gpio    = <&gpio4 RK_PA3 GPIO_ACTIVE_HIGH>;
 		BT,wake_gpio     = <&gpio4 RK_PA4 GPIO_ACTIVE_HIGH>;
 		BT,wake_host_irq = <&gpio4 RK_PA5 GPIO_ACTIVE_HIGH>;
-		status = "disabled";
+		status = "okay";
 	};
 	
 	joypad: singleadc-joypad {
@@ -151,32 +151,33 @@
 		/* adc calculate scale */
 		button-adc-scale = <2>;
 
+
 		/* adc deadzone range  */
-		button-adc-deadzone = <48>;
+		button-adc-deadzone = <64>;
 
 		/*
 		  specifies fuzz value that is used to filter noise from
 		  the event stream.
 		*/
-		button-adc-fuzz = <16>;
-		button-adc-flat = <16>;
+		button-adc-fuzz = <32>;
+		button-adc-flat = <32>;
 
 		/*
 		  Analog Stick data tuning value(precent)
 		  p = positive direction, n = negative direction
 		  report value = (real_adc_data * tuning_value) / 100
 		*/
-		abs_x-p-tuning = <250>;
-		abs_x-n-tuning = <250>;
+		abs_x-p-tuning = <245>;
+		abs_x-n-tuning = <245>;
 
-		abs_y-p-tuning = <250>;
-		abs_y-n-tuning = <250>;
+		abs_y-p-tuning = <245>;
+		abs_y-n-tuning = <245>;
 
-		abs_rx-p-tuning = <250>;
-		abs_rx-n-tuning = <250>;
+		abs_rx-p-tuning = <245>;
+		abs_rx-n-tuning = <245>;
 
-		abs_ry-p-tuning = <250>;
-		abs_ry-n-tuning = <250>;
+		abs_ry-p-tuning = <245>;
+		abs_ry-n-tuning = <245>;
 
 		/* poll device interval (ms), adc read interval */
 		poll-interval = <10>;
@@ -246,7 +247,7 @@
 		        linux,code = <BTN_TL>;
 		};
 		sw13 {
-		        gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
 		        label = "GPIO BTN_TR";
 		        linux,code = <BTN_TR>;
 		};
@@ -256,7 +257,7 @@
 		        linux,code = <BTN_TL2>;
 		};
 		sw15 {
-		        gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
 		        label = "GPIO BTN_TR2";
 		        linux,code = <BTN_TR2>;
 		};
