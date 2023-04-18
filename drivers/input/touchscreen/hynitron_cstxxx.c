@@ -19,6 +19,8 @@
 #include <linux/input.h>
 #include <linux/input/mt.h>
 #include <linux/input/touchscreen.h>
+#include <linux/interrupt.h>
+#include <linux/irqreturn.h>
 #include <linux/mod_devicetable.h>
 #include <linux/module.h>
 #include <linux/property.h>
@@ -65,6 +67,22 @@ struct hynitron_ts_data {
 #define CST3XX_TOUCH_COUNT_MASK			GENMASK(6, 0)
 
 
+/* Temporary helper funcions ported from mainline */
+
+static inline void __put_unaligned_le24(const u32 val, u8 *p)
+{
+	*p++ = val;
+	*p++ = val >> 8;
+	*p++ = val >> 16;
+}
+
+static inline void put_unaligned_le24(const u32 val, void *p)
+{
+	__put_unaligned_le24(val, p);
+}
+
+/* End of temporary helper functions */
+
 /*
  * Hard coded reset delay value of 20ms not IC dependent in
  * vendor driver.
@@ -77,7 +95,8 @@ static void hyn_reset_proc(struct i2c_client *client, int delay)
 	msleep(20);
 	gpiod_set_value_cansleep(ts_data->reset_gpio, 0);
 	if (delay)
-		fsleep(delay * 1000);
+		msleep(delay);
+		//fsleep(delay * 1000);
 }
 
 static irqreturn_t hyn_interrupt_handler(int irq, void *dev_id)
@@ -448,7 +467,8 @@ static int hyn_probe(struct i2c_client *client)
 	if (err < 0)
 		return err;
 
-	err = devm_request_threaded_irq(&client->dev, client->irq,
+	//err = devm_request_threaded_irq(&client->dev, client->irq,
+	err = request_threaded_irq(client->irq,
 					NULL, hyn_interrupt_handler,
 					IRQF_ONESHOT,
 					"Hynitron Touch Int", client);
