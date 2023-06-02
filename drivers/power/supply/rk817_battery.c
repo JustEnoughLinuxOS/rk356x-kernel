@@ -2887,10 +2887,17 @@ static void rk817_bat_output_info(struct rk817_battery_device *battery)
 
 static void rk817_battery_work(struct work_struct *work)
 {
+#ifdef __LED__
+       int dsoc;
+#endif
 	struct rk817_battery_device *battery =
 		container_of(work,
 			     struct rk817_battery_device,
 			     bat_delay_work.work);
+
+#ifdef __LED__
+       dsoc = (battery->dsoc + 500) / 1000;
+#endif
 
 	rk817_bat_update_info(battery);
 	rk817_bat_lowpwr_check(battery);
@@ -2898,6 +2905,68 @@ static void rk817_battery_work(struct work_struct *work)
 	rk817_bat_power_supply_changed(battery);
 	rk817_bat_save_data(battery);
 	rk817_bat_output_info(battery);
+
+#ifdef __LED__
+       if((battery->ac_in)||(battery->usb_in)){
+               #ifdef VOLTAGE_ALGORITHM
+               if(battery_percent_full == 1){
+               #else
+               if(dsoc == 100){
+               #endif
+                       if(gpio_get_value(22)==1)
+                       {
+                               gpio_direction_output(22,0);
+                       }
+                       if(gpio_get_value(21)==0)
+                       {
+                               gpio_direction_output(21,1);
+                       }
+               }else{
+                       if(gpio_get_value(22)==0)
+                       {
+                               gpio_direction_output(22,1);
+                       }
+                       if(gpio_get_value(21)==1)
+                       {
+                               gpio_direction_output(21,0);
+                       }
+               }
+               if(gpio_get_value(23)==1)
+               {
+                       gpio_direction_output(23,0);
+               }
+       }
+       else
+       {
+               #ifdef VOLTAGE_ALGORITHM
+               if(low_battery_percent == 1){
+               #else
+               if(dsoc <= 20){
+               #endif
+                       if(gpio_get_value(21)==1)
+                       {
+                               gpio_direction_output(21,0);
+                       }
+                       if(gpio_get_value(23)==0)
+                       {
+                               gpio_direction_output(23,1);
+                       }
+               }else{
+                       if(gpio_get_value(21)==0)
+                       {
+                               gpio_direction_output(21,1);
+                       }
+                       if(gpio_get_value(23)==1)
+                       {
+                               gpio_direction_output(23,0);
+                       }
+               }
+               if(gpio_get_value(22)==1)
+               {
+                       gpio_direction_output(22,0);
+               }
+       }
+#endif
 
 	if (rk817_bat_field_read(battery, CUR_CALIB_UPD)) {
 		rk817_bat_current_calibration(battery);
