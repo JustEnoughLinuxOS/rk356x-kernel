@@ -1702,7 +1702,7 @@ static void rk817_bat_rsoc_init(struct rk817_battery_device *battery)
 	else
 		rk817_bat_not_first_pwron(battery);
 
-	 rk817_bat_save_dsoc(battery, battery->dsoc);
+	 rk817_bat_save_dsoc(battery, battery->rsoc);
 }
 
 static void rk817_bat_caltimer_isr(struct timer_list *t)
@@ -2095,7 +2095,7 @@ static int rk817_battery_get_property(struct power_supply *psy,
 			val->intval = VIRTUAL_VOLTAGE * 1000;
 		break;
 	case POWER_SUPPLY_PROP_CAPACITY:
-		val->intval = (battery->dsoc  + 500) / 1000;
+		val->intval = (battery->rsoc  + 500) / 1000;
 		if (battery->pdata->bat_mode == MODE_VIRTUAL)
 			val->intval = VIRTUAL_SOC;
 		break;
@@ -2280,7 +2280,7 @@ static void rk817_battery_debug_info(struct rk817_battery_device *battery)
 	rk817_bat_get_ocv_current0(battery);
 	rk817_bat_get_pwron_current(battery);
 	rk817_bat_get_ocv_count(battery);
-	rk817_bat_save_dsoc(battery, battery->dsoc);
+	rk817_bat_save_dsoc(battery, battery->rsoc);
 	DBG("capactiy = %d\n", rk817_bat_get_capacity_mah(battery));
 }
 
@@ -2345,7 +2345,7 @@ static void rk817_bat_update_info(struct rk817_battery_device *battery)
 
 static void rk817_bat_save_data(struct rk817_battery_device *battery)
 {
-	rk817_bat_save_dsoc(battery, battery->dsoc);
+	rk817_bat_save_dsoc(battery, battery->rsoc);
 	rk817_bat_save_cap(battery, battery->remain_cap / 1000);
 }
 
