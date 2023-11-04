@@ -887,11 +887,6 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		status = "okay";
-
-                cw2015@62 {
-                        compatible = "cellwise,cw2015";
-                        reg = <0x62>;
-                };
 	};
 
 	uart0: serial@fdd50000 {
