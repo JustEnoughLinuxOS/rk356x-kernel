@@ -316,7 +316,7 @@
 
 	rockchip_suspend: rockchip-suspend {
 		compatible = "rockchip,pm-rk3568";
-		status = "okay";
+		status = "disabled";
 		rockchip,sleep-debug-en = <1>;
 		rockchip,sleep-mode-config = <
 			(0
