@@ -42,7 +42,7 @@ def main():
     BOARD = sys.argv[1]
     TARGET_DTBS = DTBS[BOARD]
     target_dtb_list = ''
-    default_dtb = False
+    default_dtb = True
 
     for dtb, value in TARGET_DTBS.items():
         if default_dtb:
