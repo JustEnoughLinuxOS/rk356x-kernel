@@ -19,7 +19,7 @@
 #include <linux/spinlock.h>
 #include <linux/notifier.h>
 #include <linux/types.h>
-#define __LED__
+//#define __LED__
 
 /*
  * All voltages, currents, charges, energies, time and temperatures in uV,
